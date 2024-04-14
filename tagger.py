@@ -4,8 +4,11 @@ import os
 # Variables
 
 LIBRARY_PATH = "F:\music\library"
+OVERWRITE_TAGS = False
 
-ONLY_EDIT_THIS_FOLDER = "No Phun Intended"
+# Optional
+
+ONLY_EDIT_THIS_ALBUM = ""
 
 # Code
 
@@ -25,10 +28,18 @@ def get_artist_album(input):
     
 def edit_metadata(song_path, title, artist, album):
     f = music_tag.load_file(song_path)
-    f['title'] = title
-    f['album'] = album
-    f['artist'] = artist
+
+    if OVERWRITE_TAGS or not f.get('title'):
+        f['title'] = title
+
+    if OVERWRITE_TAGS or not f.get('album'):
+        f['album'] = album
+
+    if OVERWRITE_TAGS or not f.get('artist'):
+        f['artist'] = artist
+    
     f.save()
+    print(f'Tagged: \t"{title}"')
 
 def main():
     for root, folders, files in os.walk(LIBRARY_PATH):
@@ -41,15 +52,15 @@ def main():
                     song_title = trim_ext(song)
                     # We found a song we would like to edit its metadata
                     song_path = root + '\\' + song
-                    if (album == ONLY_EDIT_THIS_FOLDER):
-                        print(f"song = {song}")
+                    edit_metadata(song_path, song_title, artist, album)
+                    if (ONLY_EDIT_THIS_ALBUM == ""):
                         edit_metadata(song_path, song_title, artist, album)
+                    else:
+                        if (album == ONLY_EDIT_THIS_ALBUM):
+                            edit_metadata(song_path, song_title, artist, album)
 
-
-
-
-
-if os.path.exists(LIBRARY_PATH):
-    main()
-else:
-    print("Path not found.")
+if __name__ == "__main__":
+    if os.path.exists(LIBRARY_PATH):
+        main()
+    else:
+        print("Path not found.")
