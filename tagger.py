@@ -52,7 +52,6 @@ def main():
                     song_title = trim_ext(song)
                     # We found a song we would like to edit its metadata
                     song_path = root + '\\' + song
-                    edit_metadata(song_path, song_title, artist, album)
                     if (ONLY_EDIT_THIS_ALBUM == ""):
                         edit_metadata(song_path, song_title, artist, album)
                     else:
